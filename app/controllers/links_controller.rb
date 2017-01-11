@@ -1,8 +1,11 @@
 class LinksController < ApplicationController
   before_action only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_user!, exept: [:index]
 
   def index
-    @links = current_user.links
+    if user_signed_in?
+      @links = current_user.links
+    end
   end
 
   def new
@@ -10,8 +13,7 @@ class LinksController < ApplicationController
   end
 
   def edit
-    @links = current_user.links
-    @link = @links.find(link_id_params)
+    @link = current_user.links.find(link_id_params)
   end
 
   def create
@@ -25,8 +27,7 @@ class LinksController < ApplicationController
   end
 
   def update
-    @links = current_user.links
-    @link = @links.find(link_id_params)
+    @link = current_user.links.find(link_id_params)
 
     if @link.update_attributes(link_params)
       redirect_to links_path
@@ -36,8 +37,7 @@ class LinksController < ApplicationController
   end
 
   def destroy
-    @links = current_user.links
-    @link = @links.find(link_id_params)
+    @link = current_user.links.find(link_id_params)
     @link.destroy
     
     redirect_to links_path
