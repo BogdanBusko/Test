@@ -43,6 +43,35 @@ class LinksController < ApplicationController
     redirect_to links_path
   end
 
+  def show_all_tags
+    @tag = []
+
+    tags = current_user.links
+    tagMass = []
+
+    tags.each do |t|
+      tagMass += t.tags.split(',')
+    end
+
+    tagMass.each do |t|
+      if @tag.exclude? t
+          @tag << t
+      end
+    end
+  end
+
+  def show_link_by_tag_name
+      tags = current_user.links
+      @tag = tag_params
+      @links = []
+
+      tags.each do |t|
+        if t.tags.include? @tag
+          @links << t
+        end
+      end
+  end
+
   private
     def link_params
       params.require(:link).permit(:link_text, :tags, :descriptio)
@@ -51,4 +80,8 @@ class LinksController < ApplicationController
     def link_id_params
       return params[:id]
     end 
+
+    def tag_params 
+      return params[:tags]
+    end
 end
